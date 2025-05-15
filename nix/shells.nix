@@ -91,8 +91,7 @@
 
       # Set OpenGL environment variables
       export GL_INCLUDE_PATH="${pkgs.libGL.dev}/include:${pkgs.libGLU.dev}/include"
-      export GL_LIBRARY_PATH="${pkgs.libGL}/lib:${pkgs.libGLU}/lib"
-      export LD_LIBRARY_PATH="${pkgs.libGL}/lib:${pkgs.libGLU}/lib:${pkgs.glew}/lib:${pkgs.ffmpeg_6}/lib:$LD_LIBRARY_PATH"
+      export GL_LIBRARY_PATH="${pkgs.libGL}/lib:${pkgs.libGLU}/lib:${pkgs.glew}/lib:${pkgs.ffmpeg_6}/lib:$LD_LIBRARY_PATH"
 
       # Ensure X11 libraries can be found
       export LD_LIBRARY_PATH="${pkgs.xorg.libX11}/lib:${pkgs.xorg.libXext}/lib:${pkgs.xorg.libXi}/lib:${pkgs.xorg.libXmu}/lib:$LD_LIBRARY_PATH"
@@ -129,91 +128,59 @@
       alias nixGL='run_with_nixgl'
 
       # --- CMake Helper Functions ---
-      configure_slicer_full() {
-        local source_dir="''${1:-.}"
-        local build_dir="''${2:-./build-slicer-full}"
-        local install_prefix="''${3:-$build_dir/install}"
+      # These functions are assumed to be defined elsewhere or used if VTL3D depends on a pre-built Slicer.
+      # configure_slicer_full() { ... }
+      # configure_slicer_mini() { ... }
+      # --- End CMake Helper Functions ---
 
-        echo "Configuring Slicer (Full)..."
-        echo "Source Dir: $source_dir"
-        echo "Build Dir:  $build_dir"
-        echo "Install Prefix: $install_prefix"
-
-        mkdir -p "$build_dir"
-        cmake -S "$source_dir" -B "$build_dir" \
-          -DCMAKE_INSTALL_PREFIX="$install_prefix" \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DSlicer_CMake_HTTPS_Supported:BOOL=TRUE \
-          -DSlicer_WC_LAST_CHANGED_DATE=1970-01-01
-          # Add other Slicer full build flags here
-
-        echo "Configuration complete. cd '$build_dir' and run 'make -j$(nproc)' or 'make install'."
-      }
-
-      configure_slicer_mini() {
-        local source_dir="''${1:-.}"
-        local build_dir="''${2:-./build-slicer-mini}"
-        local install_prefix="''${3:-$build_dir/install}"
-        # Resolve source_dir to an absolute path relative to PWD
-        # Check if readlink exists, otherwise use python alternative for wider compatibility
-        local absolute_source_dir
-        if command -v readlink &> /dev/null; then
-            absolute_source_dir="$(readlink -f "$source_dir")"
-        elif command -v python &> /dev/null; then
-            absolute_source_dir="$(python -c "import os, sys; print(os.path.abspath(sys.argv[1]))" "$source_dir")"
-        else
-            echo "Error: Cannot resolve absolute path. Need 'readlink' or 'python'." >&2
-            return 1
-        fi
-        local slicer_source_path="$absolute_source_dir/Slicer" # Path to the Slicer subdirectory
-
-        echo "Configuring Slicer (Minimal)..."
-        echo "Source Dir: $absolute_source_dir"
-        echo "Build Dir:  $build_dir"
-        echo "Install Prefix: $install_prefix"
-        # Adjust Extension Dir calculation to use absolute path
-        local extension_source_dir="$absolute_source_dir/Modules/Scripted/Home" # Assuming Home module location
-        echo "Extension Dir: $extension_source_dir"
-
-        mkdir -p "$build_dir"
-        # Use absolute paths for -S and -Dslicersources_SOURCE_DIR
-        cmake -S "$absolute_source_dir" -B "$build_dir" \
-          -DCMAKE_INSTALL_PREFIX="$install_prefix" \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DSlicer_CMake_HTTPS_Supported:BOOL=TRUE \
-          -DSlicer_WC_LAST_CHANGED_DATE=1970-01-01 \
-          -Dslicersources_SOURCE_DIR:PATH="$slicer_source_path" # Use absolute Slicer source path
-
-        echo "Configuration complete. cd '$build_dir' and run 'make -j$(nproc)' or 'make install'."
-      }
-      # --- End CMake Helper Functions ---ss
-
-      echo "=== Environment Summary (Custom CGAL ${myCgal.version}) ==="
-      echo "GCC Version: $(${pkgs.gcc}/bin/gcc --version | head -n1)"
-      echo "Boost Version: ${pkgs.boost.version}"
-      echo "WxWidgets Version: $(${pkgs.wxGTK32}/bin/wx-config --version)"
-      echo "CGAL Version: ${myCgal.version} (custom build)"
-      echo "Eigen Version: ${pkgs.eigen.version}"
-      echo "FFmpeg Version: ${pkgs.ffmpeg_6.version}"
-      echo "Qt5 (Base) Version: ${pkgs.qt5.qtbase.version}"
-      echo "CGAL_DIR: $CGAL_DIR (custom build)"
-      echo "BOOST_ROOT: $BOOST_ROOT"
-      echo "wxWidgets_CONFIG_EXECUTABLE: $wxWidgets_CONFIG_EXECUTABLE"
-      echo "CMAKE_PREFIX_PATH: $CMAKE_PREFIX_PATH"
-      echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+      echo ""
       echo "======================================================="
-      echo "nixGL Integration: Use 'nixGL <command>' or 'run_with_nixgl <command>' (Forces QT_QPA_PLATFORM=xcb)"
+      echo "        VocalTractLab3D 开发环境        "
       echo "======================================================="
-      echo -e "
-CMake Helper Usage (run from project root):
-  configure_slicer_mini ./miniSlicer ./build/build-mini ./build/install-mini
-  cd ./build/build-mini && make -j$(nproc)
-  or
-  configure_slicer_full ./miniSlicer/Slicer ./build/build-full ./build/install-full
-  cd ./build/build-full && make -j$(nproc)
-"
-      echo "Compiler cache (ccache) enabled."
-      echo "CCACHE_DIR: $CCACHE_DIR"
+      echo "Nix Shell 环境已激活."
+      echo ""
+      echo "--- 构建 VocalTractLab3D (本项目) ---"
+      echo "  假设您当前位于 VocalTractLab3D 项目根目录 (例如, /home/jqwang/Work/01-Vocal3D)."
+      echo "  主 CMakeLists.txt 文件预期位于子目录如 'miniVTL3D/sources/' 下."
+      echo ""
+      echo "  1. 进入 VTL3D 源码目录:"
+      echo "     cd miniVTL3D/sources"
+      echo "  2. 创建并进入构建目录:"
+      echo "     mkdir -p build && cd build"
+      echo "  3. 使用 CMake 配置项目:"
+      echo "     cmake .."
+      echo "  4. 编译项目:"
+      echo "     make -j$(nproc)  # 或直接使用 'make'"
+      echo ""
+      echo "--- 本项目自定义构建别名 ---"
+      echo "  'make_vtl': 进入 miniVTL3D/sources/build, 配置 (cmake ..) 并构建项目."
+      echo "  'remake_vtl': 进入 miniVTL3D/sources/build 并运行 'make -j$(nproc)' (不清理,不重新配置)."
+      echo "  'clean_vtl': 删除 miniVTL3D/sources/build 目录."
+      echo ""
+      alias make_vtl='(echo "执行 make_vtl: 正在配置并构建 VTL3D..." && cd miniVTL3D/sources && mkdir -p build && cd build && cmake .. && make -j$(nproc) && echo "make_vtl 已完成.")'
+      alias remake_vtl='(echo "执行 remake_vtl: 正在构建 VTL3D..." && cd miniVTL3D/sources/build && make -j$(nproc) && echo "remake_vtl 已完成.")'
+      alias clean_vtl='(echo "执行 clean_vtl: 正在删除 miniVTL3D/sources/build..." && rm -rf miniVTL3D/sources/build && echo "clean_vtl 已完成.")'
+
+      echo "--- Slicer 依赖构建 (如果适用 & 使用辅助脚本) ---"
+      echo "  如果 VocalTractLab3D 依赖于通过以下脚本构建的 Slicer,"
+      echo "  请确保脚本 (configure_slicer_mini, configure_slicer_full) 可执行"
+      echo "  并且位于您的 PATH 环境变量中或可以通过相对路径调用."
+      echo "  这些脚本通常应在包含 Slicer 源码或超级构建 (superbuild) 的目录中运行."
+      echo ""
+      echo "  配置 Slicer (最小版本):"
+      echo "    configure_slicer_mini <Slicer超级构建或源码路径> <Slicer构建目录路径> <Slicer安装目录路径>"
+      echo "    示例: configure_slicer_mini ./miniSlicer ./build/SlicerMini-build ./build/SlicerMini-install"
+      echo "    然后: cd <Slicer构建目录路径> && make -j$(nproc)"
+      echo ""
+      echo "  配置 Slicer (完整版本):"
+      echo "    configure_slicer_full <Slicer源码路径> <Slicer构建目录路径> <Slicer安装目录路径>"
+      echo "    示例: configure_slicer_full ./miniSlicer/Slicer ./build/SlicerFull-build ./build/SlicerFull-install"
+      echo "    然后: cd <Slicer构建目录路径> && make -j$(nproc)"
+      echo ""
+      echo "--- 其他信息 ---"
+      echo "编译器缓存 (ccache) 已启用. CCACHE_DIR: $CCACHE_DIR"
+      echo "NixGL 集成: 如果GUI应用出现问题，尝试使用 'nixGL <命令>' 或 'run_with_nixgl <命令>' (强制使用 QT_QPA_PLATFORM=xcb)."
+      echo "======================================================="
     '';
   };
 
@@ -233,10 +200,10 @@ CMake Helper Usage (run from project root):
     ];
 
     shellHook = ''
-      echo "=== Python Development Environment ==="
-      echo "Python Version: $(python --version)"
-      echo "Packages available: matplotlib, numpy, trimesh, rtree, cookiecutter, jinja2-github"
-      echo "===================================="
+      echo "=== Python 开发环境 ==="
+      echo "Python 版本: $(python --version)"
+      echo "可用包: matplotlib, numpy, trimesh, rtree, cookiecutter, jinja2-github"
+      echo "==================================="
       # Optional venv setup:
       # if [ ! -d ".venv" ]; then python -m venv .venv; fi
       # source .venv/bin/activate

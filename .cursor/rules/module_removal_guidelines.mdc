@@ -75,12 +75,12 @@ This document outlines the general process followed to remove non-essential C++ 
 
 *   **`SegmentSequence`**: This module, primarily a front-end to `GesturalScore`, was also removed.
     *   Dependencies in `Data.h`, `Data.cpp`, `MainWindow.h`, `MainWindow.cpp`, and `VocalTractLabApi.h/.cpp` were commented out or removed.
-    *   The `AnnotationDialog` which relied автобус on `SegmentSequence` has had its core logic disabled and is pending removal from build.
+    *   The `AnnotationDialog` which relied on `SegmentSequence` has had its core logic disabled and is pending removal from build.
 
 *   **`AnatomyParams` and `AnatomyParamsDialog`**: These provided high-level anatomical parameter adjustments.
     *   The core logic in `Backend/AnatomyParams.h/.cpp` was not restored.
     *   Dependencies in `Data.h/.cpp` and `MainWindow.h/.cpp` (for `AnatomyParamsDialog`) were commented out.
-    *   `AnatomyParamsDialog.cpp` is pending removal from the build system.
+    *   `AnatomyParamsDialog.cpp` (and its `.h`) were removed/excluded from the build system.
 
 *   **`VocalTract` (Core Geometric Model - Retained, with plan for future simplification)**:
     *   Identified as a core component providing geometric data to `Acoustic3dSimulation`, `TlModel`, and `TdsModel`.
@@ -93,32 +93,33 @@ This document outlines the general process followed to remove non-essential C++ 
         3.  Identify which parts of `VocalTract` (e.g., parametric controls, 3D surface generation via `[Surface.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Surface.h)` and `[Splines.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Splines.h)`, complex centerline/cross-section calculations from surfaces documented in `[01-VocalTractGeometryAlgorithms.md](mdc:VTL3D_1.0.2/sources/doc/01-VocalTractGeometryAlgorithms.md)`, shape libraries, most export functions) become redundant.
         4.  Refactor `VocalTract` to be a much simpler class, potentially only responsible for loading pre-computed geometry from a specified CSV format and providing minimal necessary data to `Acoustic3dSimulation` that isn't in the CSV.
 
-*   **Core Backend Components (Currently Retained during initial Backend restoration)**:
+*   **Core Backend Components (Restored/Retained during initial Backend restoration)**:
     *   `[IirFilter.h](mdc:VTL3D_1.0.2/sources/Backend/IirFilter.h)`: Implements IIR filters.
     *   `[Signal.h](mdc:VTL3D_1.0.2/sources/Backend/Signal.h)`: Defines basic signal data structures.
     *   `[LfPulse.h](mdc:VTL3D_1.0.2/sources/Backend/LfPulse.h)`: Implements the LF model for glottal pulse generation (声源模型). Documented in `[07-VowelLfAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/07-VowelLfAnalysis.md)`.
     *   `[TdsModel.h](mdc:VTL3D_1.0.2/sources/Backend/TdsModel.h)`: Implements a time-domain synthesis model. User decided to keep this for now. Documented in (pending) analysis file.
     *   `[TlModel.h](mdc:VTL3D_1.0.2/sources/Backend/TlModel.h)`: Implements a frequency-domain transmission line model. Temporarily restored. Documented in (pending) analysis file.
-    *   `[Surface.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Surface.h)`: Defines 3D surface representation, crucial for `VocalTract`. Documented in (pending) analysis file.
-    *   `[Splines.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Splines.h)`: Provides spline classes, fundamental for `VocalTract` geometry. Documented in (pending) analysis file.
-    *   `[SoundLib.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/SoundLib.h)`: Cross-platform audio I/O library. Essential for hearing any synthesized output. Documented in `[09-SoundLibAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/09-SoundLibAnalysis.md)`. Retained.
-    *   **Decision Rationale**: These components are being restored iteratively to resolve compilation errors. Their long-term necessity in a maximally simplified, CSV-driven `Acoustic3dSimulation`-focused version will be re-evaluated later. Some (like `Signal.h`, `SoundLib.h`) are almost certainly indispensable if audio output or basic signal handling is required.
+    *   `[VocalTract.h](mdc:VTL3D_1.0.2/sources/Backend/VocalTract.h)`: Core vocal tract geometry model (see above). Restored.
+    *   `[Surface.h](mdc:VTL3D_1.0.2/sources/Backend/Surface.h)`: Defines 3D surface representation, crucial for `VocalTract`. Restored. Documented in (pending) analysis file.
+    *   `[Splines.h](mdc:VTL3D_1.0.2/sources/Backend/Splines.h)`: Provides spline classes, fundamental for `VocalTract` geometry. Restored. Documented in (pending) analysis file.
+    *   `[SoundLib.h](mdc:VTL3D_1.0.2/sources/Backend/SoundLib.h)`: Cross-platform audio I/O library. Essential for hearing any synthesized output. Documented in `[09-SoundLibAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/09-SoundLibAnalysis.md)`. Restored.
+    *   **Decision Rationale**: These components are being restored iteratively to resolve compilation errors. Their long-term necessity in a maximally simplified, CSV-driven `Acoustic3dSimulation`-focused version will be re-evaluated later. Some (like `Signal.h`, `SoundLib.h`, `VocalTract.h` in some form) are almost certainly indispensable.
 
-*   **Glottis Models (Currently Retained)**:
-    *   Includes `[TwoMassModel.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/TwoMassModel.h)` (documented in `[02-TwoMassModelAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/02-TwoMassModelAnalysis.md)`), `[TriangularGlottis.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/TriangularGlottis.h)` (documented in `[03-TriangularGlottisAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/03-TriangularGlottisAnalysis.md)`), and potentially `GeometricGlottis.h` and a base `Glottis.h`.
+*   **Glottis Models (Restored/Retained)**:
+    *   Includes `[TwoMassModel.h](mdc:VTL3D_1.0.2/sources/Backend/TwoMassModel.h)` (documented in `[02-TwoMassModelAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/02-TwoMassModelAnalysis.md)`), `[TriangularGlottis.h](mdc:VTL3D_1.0.2/sources/Backend/TriangularGlottis.h)` (documented in `[03-TriangularGlottisAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/03-TriangularGlottisAnalysis.md)`), `GeometricGlottis.h` (pending analysis), and base `Glottis.h` (pending analysis).
     *   These define声源模型 for voice synthesis.
-    *   **Relevance & Decision**: Essential for speech synthesis with `Acoustic3dSimulation`. Retained.
+    *   **Relevance & Decision**: Essential for speech synthesis with `Acoustic3dSimulation`. Restored/Retained.
 
-*   **Signal Analysis Tools (Retained for now)**:
-    *   `[F0EstimatorYin.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/F0EstimatorYin.h)`: For F0 estimation. Documented in `[04-F0EstimatorYinAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/04-F0EstimatorYinAnalysis.md)`.
-    *   `[VoiceQualityEstimator.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/VoiceQualityEstimator.h)`: For voice quality estimation. Documented in `[05-VoiceQualityEstimatorAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/05-VoiceQualityEstimatorAnalysis.md)`.
-    *   **Current Status**: User decided to retain these for now. Their `.h` and `.cpp` files were restored.
+*   **Signal Analysis Tools (Restored/Retained per user decision)**:
+    *   `[F0EstimatorYin.h](mdc:VTL3D_1.0.2/sources/Backend/F0EstimatorYin.h)`: For F0 estimation. Documented in `[04-F0EstimatorYinAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/04-F0EstimatorYinAnalysis.md)`.
+    *   `[VoiceQualityEstimator.h](mdc:VTL3D_1.0.2/sources/Backend/VoiceQualityEstimator.h)`: For voice quality estimation. Documented in `[05-VoiceQualityEstimatorAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/05-VoiceQualityEstimatorAnalysis.md)`.
+    *   **Current Status**: User decided to retain these. Their `.h` and `.cpp` files were restored.
 
-*   **TubeSequence Interface and Implementations (Retained for now, linked to `TdsModel`)**:
-    *   `[TubeSequence.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/TubeSequence.h)`: Abstract interface for dynamic tube models. Documented in `[06-TubeSequenceAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/06-TubeSequenceAnalysis.md)`.
-    *   `[StaticPhone.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/StaticPhone.h)`: Implementation for static phonemes. Documented in `[10-StaticPhoneAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/10-StaticPhoneAnalysis.md)` (updated link).
-    *   `[VowelLf.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/VowelLf.h)`: Implementation for LF-source based vowels. Documented in `[07-VowelLfAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/07-VowelLfAnalysis.md)`.
-    *   `[ImpulseExcitation.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/ImpulseExcitation.h)`: Implementation for impulse response analysis. Documented in `[08-ImpulseExcitationAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/08-ImpulseExcitationAnalysis.md)`.
+*   **TubeSequence Interface and Implementations (Restored/Retained, linked to `TdsModel`)**:
+    *   `[TubeSequence.h](mdc:VTL3D_1.0.2/sources/Backend/TubeSequence.h)`: Abstract interface for dynamic tube models. Documented in `[06-TubeSequenceAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/06-TubeSequenceAnalysis.md)`.
+    *   `[StaticPhone.h](mdc:VTL3D_1.0.2/sources/Backend/StaticPhone.h)`: Implementation for static phonemes. Documented in `[10-StaticPhoneAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/10-StaticPhoneAnalysis.md)`.
+    *   `[VowelLf.h](mdc:VTL3D_1.0.2/sources/Backend/VowelLf.h)`: Implementation for LF-source based vowels. Documented in `[07-VowelLfAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/07-VowelLfAnalysis.md)`.
+    *   `[ImpulseExcitation.h](mdc:VTL3D_1.0.2/sources/Backend/ImpulseExcitation.h)`: Implementation for impulse response analysis. Documented in `[08-ImpulseExcitationAnalysis.md](mdc:VTL3D_1.0.2/sources/doc/08-ImpulseExcitationAnalysis.md)`.
     *   **Relevance & Decision**: Primarily serve `TdsModel`. Since `TdsModel` is currently retained, these are also restored. If `TdsModel` is later removed, these can likely be removed too.
 
 ## Key Takeaways:
