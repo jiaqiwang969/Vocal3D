@@ -2,7 +2,7 @@
 // This file is part of VocalTractLab3D.
 // Copyright (C) 2022, Peter Birkholz, Dresden, Germany
 // www.vocaltractlab.de
-// author: Peter Birkholz and Rémi Blandin
+// author: Peter Birkholz and Rï¿½mi Blandin
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -156,20 +156,20 @@ void VocalTract::init()
     "  <param index=\"2\"  name=\"JX\"   min=\"-0.5\"  max=\"0.0\"   neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
     "  <param index=\"3\"  name=\"JA\"   min=\"-7.0\"  max=\"0.0\"   neutral=\"-2.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
     "  <param index=\"4\"  name=\"LP\"   min=\"-1.0\"  max=\"1.0\"   neutral=\"-0.07\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
-    "  <param index=\"5\"  name=\"LD\"   min=\"-2.0\"  max=\"4.0\"   neutral=\"0.95\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
-    "  <param index=\"6\"  name=\"VS\"  min=\"0.0\"   max=\"1.0\"   neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
-    "  <param index=\"7\"  name=\"VO\"  min=\"-0.1\"   max=\"1.0\"   neutral=\"-0.1\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
+    "  <param index=\"5\"  name=\"LD\"   min=\"-2.0\"  max=\"4.0\"   neutral=\"0.95\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
+    "  <param index=\"6\"  name=\"VS\"  min=\"0.0\"   max=\"1.0\"   neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
+    "  <param index=\"7\"  name=\"VO\"  min=\"-0.1\"   max=\"1.0\"   neutral=\"-0.1\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
     "  <param index=\"8\"  name=\"TCX\"  min=\"-3.0\"  max=\"4.0\"   neutral=\"-0.4\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
     "  <param index=\"9\"  name=\"TCY\"  min=\"-3.0\"  max=\"1.0\"   neutral=\"-1.46\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
-    "  <param index=\"10\" name=\"TTX\"   min=\"1.5\"   max=\"5.5\"   neutral=\"3.5\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
-    "  <param index=\"11\" name=\"TTY\"  min=\"-3.0\"  max=\"2.5\"   neutral=\"-1.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
+    "  <param index=\"10\" name=\"TTX\"   min=\"1.5\"   max=\"5.5\"   neutral=\"3.5\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
+    "  <param index=\"11\" name=\"TTY\"  min=\"-3.0\"  max=\"2.5\"   neutral=\"-1.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
     "  <param index=\"12\" name=\"TBX\"  min=\"-3.0\"  max=\"4.0\"   neutral=\"2.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
-    "  <param index=\"13\" name=\"TBY\"  min=\"-3.0\"  max=\"5.0\"   neutral=\"0.5\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
-    "  <param index=\"14\" name=\"TRX\"  min=\"-4.0\"  max=\"2.0\"   neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
-    "  <param index=\"15\" name=\"TRY\"  min=\"-6.0\"  max=\"0.0\"   neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
-    "  <param index=\"16\" name=\"TS1\"  min=\"0.0\" max=\"1.0\"  neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"  
-    "  <param index=\"17\" name=\"TS2\"  min=\"0.0\" max=\"1.0\"  neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
-    "  <param index=\"18\" name=\"TS3\"  min=\"-1.0\" max=\"1.0\"  neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
+    "  <param index=\"13\" name=\"TBY\"  min=\"-3.0\"  max=\"5.0\"   neutral=\"0.5\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n" 
+    "  <param index=\"14\" name=\"TRX\"  min=\"-4.0\"  max=\"2.0\"   neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
+    "  <param index=\"15\" name=\"TRY\"  min=\"-6.0\"  max=\"0.0\"   neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
+    "  <param index=\"16\" name=\"TS1\"  min=\"0.0\" max=\"1.0\"  neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
+    "  <param index=\"17\" name=\"TS2\"  min=\"0.0\" max=\"1.0\"  neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
+    "  <param index=\"18\" name=\"TS3\"  min=\"-1.0\" max=\"1.0\"  neutral=\"0.0\"   positive_velocity_factor=\"1.0\"   negative_velocity_factor=\"1.0\"/>\n"
     "</anatomy>";
 
   // ****************************************************************
@@ -536,6 +536,8 @@ void VocalTract::initLarynx()
 
 void VocalTract::initJaws()
 {
+  std::cout << "[VT_DEBUG] VocalTract::initJaws() CALLED." << std::endl;
+
   Surface *upperJaw   = &surface[PALATE];
   Surface *lowerJaw   = &surface[MANDIBLE];
   Surface *upperTeeth = &surface[UPPER_TEETH];
@@ -896,6 +898,8 @@ void VocalTract::initJaws()
 
 void VocalTract::initVelum()
 {
+  std::cout << "[VT_DEBUG] VocalTract::initVelum() CALLED." << std::endl;
+
   int i, j;
   double t, u;
   Point3D C[3];       // Control point of the Bezier-curve for a rib
@@ -1072,6 +1076,8 @@ void VocalTract::initVelum()
 
 void VocalTract::setDefaultEmaPoints()
 {
+  std::cout << "[VT_DEBUG] VocalTract::setDefaultEmaPoints() CALLED." << std::endl;
+
   EmaPoint p;
 
   emaPoints.clear();
@@ -1114,6 +1120,8 @@ void VocalTract::setDefaultEmaPoints()
 
 Point3D VocalTract::getEmaPointCoord(int index)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getEmaPointCoord(index=" << index << ") CALLED." << std::endl;
+
   Point3D P(0.0, 0.0, 0.0);
 
   if ((index < 0) || (index >= (int)emaPoints.size()))
@@ -1175,6 +1183,8 @@ Point3D VocalTract::getEmaPointCoord(int index)
 
 void VocalTract::getEmaSurfaceVertexRange(int emaSurface, int *min, int *max)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getEmaSurfaceVertexRange(emaSurface=" << emaSurface << ", min=" << min << ", max=" << max << ") CALLED." << std::endl;
+
   if ((emaSurface < 0) || (emaSurface >= NUM_EMA_SURFACES) || 
     (min == NULL) || (max == NULL))
   {
@@ -2347,6 +2357,8 @@ void VocalTract::setParams(double *controlParams)
 
 void VocalTract::calculateAll()
 {
+  std::cout << "[VT_DEBUG] VocalTract::calculateAll() CALLED." << std::endl;
+
   // ****************************************************************
   // Set the limited parameter values equal to the set values.
   // ****************************************************************
@@ -2375,6 +2387,8 @@ void VocalTract::calculateAll()
 
 void VocalTract::calcSurfaces()
 {
+  std::cout << "[VT_DEBUG] VocalTract::calcSurfaces() CALLED." << std::endl;
+
   int i, k;
   int rib;
   Point3D P, Q, R, A, v;
@@ -3138,6 +3152,8 @@ void VocalTract::calcSurfaces()
 
 void VocalTract::calcLips()
 {
+  std::cout << "[VT_DEBUG] VocalTract::calcLips() CALLED." << std::endl;
+
   Surface *upperLip   = &surface[UPPER_LIP];
   Surface *lowerLip   = &surface[LOWER_LIP];
 
@@ -3563,6 +3579,12 @@ void VocalTract::calcLips()
 void VocalTract::getImportantLipPoints(Point3D &onset, Point3D &corner, 
                                        Point3D &F0, Point3D &F1, double &yClose)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getImportantLipPoints(onset.x=" << onset.x << ", onset.y=" << onset.y << ", onset.z=" << onset.z 
+            << ", corner.x=" << corner.x << ", corner.y=" << corner.y << ", corner.z=" << corner.z 
+            << ", F0.x=" << F0.x << ", F0.y=" << F0.y << ", F0.z=" << F0.z 
+            << ", F1.x=" << F1.x << ", F1.y=" << F1.y << ", F1.z=" << F1.z 
+            << ", yClose=" << yClose << ") CALLED." << std::endl;
+
   int i;
   int N = narrowLipCornerPath.getNumPoints();
 
@@ -3684,6 +3706,8 @@ void VocalTract::getImportantLipPoints(Point3D &onset, Point3D &corner,
 
 void VocalTract::calcRadiation(Point3D lipCorner)
 {
+  std::cout << "[VT_DEBUG] VocalTract::calcRadiation(lipCorner.x=" << lipCorner.x << ", lipCorner.y=" << lipCorner.y << ", lipCorner.z=" << lipCorner.z << ") CALLED." << std::endl;
+
   int i, k;
   Point3D v, n;
   Point3D U, L, M, P;
@@ -3752,6 +3776,8 @@ void VocalTract::calcRadiation(Point3D lipCorner)
 
 void VocalTract::getHyoidTongueTangent(Point2D &H, Point2D &T)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getHyoidTongueTangent(H.x=" << H.x << ", H.y=" << H.y << ", T.x=" << T.x << ", T.y=" << T.y << ") CALLED." << std::endl;
+
   // H is the hyoid and C and rx/ry are the center and radius
   // of the tongue body circles.
 
@@ -3779,6 +3805,8 @@ void VocalTract::getHyoidTongueTangent(Point2D &H, Point2D &T)
 
 void VocalTract::calcTongue()
 {
+  std::cout << "[VT_DEBUG] VocalTract::calcTongue() CALLED." << std::endl;
+
   int i;
   TongueRib *rib = &tongueRib[0];
   const double EPSILON = 0.000001;
@@ -4653,8 +4681,10 @@ void VocalTract::restrictTongueParams()
 
 Point2D VocalTract::limitEllipsePos(Point2D C, double rx, double ry, LineStrip2D &border, Point2D A)
 {
+  std::cout << "[VT_DEBUG] VocalTract::limitEllipsePos(C.x=" << C.x << ", C.y=" << C.y << ", rx=" << rx << ", ry=" << ry << ", border.numPoints=" << border.getNumPoints() << ", A.x=" << A.x << ", A.y=" << A.y << ") CALLED." << std::endl;
+
   const double EPSILON = 0.000001;
-  int i;
+  int i, k;
   int N = border.getNumPoints();
   Point2D P0, P1, Q, w, u;
   double rx2 = rx*rx;
@@ -4755,6 +4785,8 @@ Point2D VocalTract::limitEllipsePos(Point2D C, double rx, double ry, LineStrip2D
 
 void VocalTract::calcTongueRibs()
 {
+  std::cout << "[VT_DEBUG] VocalTract::calcTongueRibs() CALLED." << std::endl;
+
   const double INVALID = INVALID_PROFILE_SAMPLE;
 
   // 4.6 cm is the default width between the upper incisors
@@ -4998,6 +5030,8 @@ void VocalTract::calcTongueRibs()
 
 void VocalTract::verifyTongueRibNormal(int rigid, int flexible)
 {
+  std::cout << "[VT_DEBUG] VocalTract::verifyTongueRibNormal(rigid=" << rigid << ", flexible=" << flexible << ") CALLED." << std::endl;
+
   double s, t;
   double denominator;
   Point2D P, v, R, w, Q;
@@ -5040,6 +5074,8 @@ void VocalTract::verifyTongueRibNormal(int rigid, int flexible)
 
 void VocalTract::calcCenterLine()
 {
+  std::cout << "[VT_DEBUG] VocalTract::calcCenterLine() CALLED." << std::endl;
+
   const int SKIPPED_LIP_POINTS = 1;
   int i, k;
 
@@ -5447,6 +5483,8 @@ void VocalTract::calcCenterLine()
 
 void VocalTract::verifyCenterLineNormal(int toCorrect, int refNeighbour, double scaling)
 {
+  std::cout << "[VT_DEBUG] VocalTract::verifyCenterLineNormal(toCorrect=" << toCorrect << ", refNeighbour=" << refNeighbour << ", scaling=" << scaling << ") CALLED." << std::endl;
+
   double s, t;
   double denominator, minCs, maxCs;
   Point2D P, v, R, w, Q;
@@ -5508,6 +5546,8 @@ void VocalTract::verifyCenterLineNormal(int toCorrect, int refNeighbour, double 
 
 int VocalTract::numNormalsIntersected(double scaling)
 {
+  std::cout << "[VT_DEBUG] VocalTract::numNormalsIntersected(scaling=" << scaling << ") CALLED." << std::endl;
+
   int nbIntersect(0);
   double s, t;
   double denominator, minCs, maxCs;
@@ -5552,6 +5592,8 @@ int VocalTract::numNormalsIntersected(double scaling)
 
 void VocalTract::correctPointPosition(int toCorrect, int refNeighbour, double scaling)
 {
+  std::cout << "[VT_DEBUG] VocalTract::correctPointPosition(toCorrect=" << toCorrect << ", refNeighbour=" << refNeighbour << ", scaling=" << scaling << ") CALLED." << std::endl;
+
   Point2D Pcor(centerLine[toCorrect].point);
   Point2D Ncor(centerLine[toCorrect].normal);
   Point2D Pref(centerLine[refNeighbour].point);
@@ -5637,6 +5679,8 @@ void VocalTract::correctPointPosition(int toCorrect, int refNeighbour, double sc
 
 void VocalTract::calcCrossSections()
 {
+  std::cout << "[VT_DEBUG] VocalTract::calcCrossSections() CALLED." << std::endl;
+
   double upperProfile[NUM_PROFILE_SAMPLES];
   double lowerProfile[NUM_PROFILE_SAMPLES];
   double tongueTipRadius = anatomy.tongueTipRadius_cm;
@@ -5823,6 +5867,8 @@ void VocalTract::calcCrossSections()
 void VocalTract::getCrossProfiles(Point2D P, Point2D v, double *upperProfile, 
        double *lowerProfile, bool considerTongue, Tube::Articulator &articulator, bool debug)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getCrossProfiles(..., debug=" << debug << ") CALLED." << std::endl;
+
   const double MIN_SQUARED_NORMAL_LENGTH = 0.0000001;
   const double INVALID = INVALID_PROFILE_SAMPLE;
   const int N = NUM_PROFILE_SAMPLES;
@@ -6624,6 +6670,8 @@ void VocalTract::getCrossProfiles(Point2D P, Point2D v, double* upperProfile,
   double* lowerProfile, int* upperProfileSurface, int* lowerProfileSurface,
   bool considerTongue, Tube::Articulator& articulator, bool debug)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getCrossProfiles(..., int* surfaces, debug=" << debug << ") CALLED." << std::endl;
+
   const double MIN_SQUARED_NORMAL_LENGTH = 0.0000001;
   const double INVALID = INVALID_PROFILE_SAMPLE;
   const int N = NUM_PROFILE_SAMPLES;
@@ -7627,6 +7675,8 @@ void VocalTract::insertLowerCoverProfileLine(Point2D P0, Point2D P1, int surface
 
 void VocalTract::getCrossSection(double *upperProfile, double *lowerProfile, CrossSection *section)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getCrossSection() CALLED." << std::endl;
+
   const double INVALID = INVALID_PROFILE_SAMPLE;
   int i;
   double a, b;
@@ -8330,6 +8380,8 @@ double VocalTract::getPharynxBackX(double y)
 
 void VocalTract::getTube(Tube *tube)
 {
+  std::cout << "[VT_DEBUG] VocalTract::getTube() CALLED." << std::endl;
+
   const int N = Tube::NUM_PHARYNX_MOUTH_SECTIONS;
 
   double length_cm[N];

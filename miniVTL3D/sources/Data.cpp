@@ -91,6 +91,7 @@ Data *Data::getInstance()
 
 void Data::init(const wxString &arg0)
 {
+  std::cout << "[DATA_DEBUG_INIT] Data::init() ENTRY." << std::endl;
   int i;
 
   // ****************************************************************
@@ -109,13 +110,16 @@ void Data::init(const wxString &arg0)
   // ****************************************************************
 
   vocalTract = new VocalTract();
-  vocalTract->calculateAll();
+  std::cout << "[DATA_DEBUG_INIT] Data::init() - new VocalTract() done." << std::endl;
+  // vocalTract->calculateAll(); // Intentionally commented out - expect geometry from speaker file or CSV
+  std::cout << "[DATA_DEBUG_INIT] Data::init() - First vocalTract->calculateAll() WAS SKIPPED." << std::endl;
 
   tlModel = new TlModel();
   // poleZeroPlan = new PoleZeroPlan(); // Already commented out or removed in previous steps
   // anatomyParams = new AnatomyParams(); // Removed
 
   updateTlModelGeometry(vocalTract);
+  std::cout << "[DATA_DEBUG_INIT] Data::init() - updateTlModelGeometry() done." << std::endl;
 
   // Phonetic parameters; The range of all these parameters is
   // between 0 and 1.
@@ -309,8 +313,13 @@ void Data::init(const wxString &arg0)
   // initialized).
   // ****************************************************************
 
+  std::cout << "[DATA_DEBUG_INIT] Data::init() - About to call loadSpeaker()." << std::endl;
   speakerFileName = programPath + "JD2.speaker";
   loadSpeaker(speakerFileName);
+  std::cout << "[DATA_DEBUG_INIT] Data::init() - loadSpeaker() finished." << std::endl;
+
+  updateTlModelGeometry(vocalTract);
+  std::cout << "[DATA_DEBUG_INIT] Data::init() - updateTlModelGeometry() done." << std::endl;
 
   // ****************************************************************
   // Call some initialization functions.
@@ -325,6 +334,7 @@ void Data::init(const wxString &arg0)
   config = new wxFileConfig("VocalTractLab", "Birkholz",  
     programPath + "config.ini", "", wxCONFIG_USE_LOCAL_FILE);
   readConfig();
+  std::cout << "[DATA_DEBUG_INIT] Data::init() EXIT." << std::endl;
 }
 
 
@@ -3583,6 +3593,7 @@ void Data::normalizeAudioAmplitude(int trackIndex)
 
 bool Data::loadSpeaker(const wxString &fileName)
 {
+  std::cout << "[DATA_DEBUG_LOADSPEAKER] Data::loadSpeaker() ENTRY. File: " << fileName.ToStdString() << std::endl;
   speakerFileName = fileName;
 
   // ****************************************************************
@@ -3644,15 +3655,18 @@ bool Data::loadSpeaker(const wxString &fileName)
 
   try
   {
-    vocalTract->readFromXml(fileName.ToStdString());
-    vocalTract->calculateAll();
+    std::cout << "[DATA_DEBUG_LOADSPEAKER] About to call vocalTract->readFromXml()." << std::endl;
+    vocalTract->readFromXml(fileName.ToStdString()); // Reads anatomy and shapes
+    std::cout << "[DATA_DEBUG_LOADSPEAKER] vocalTract->readFromXml() done." << std::endl;
+    // vocalTract->calculateAll(); // Intentionally commented out - CSV pathway is prioritized
+    std::cout << "[DATA_DEBUG_LOADSPEAKER] vocalTract->calculateAll() (based on speaker file) WAS SKIPPED to prioritize CSV." << std::endl;
   }
   catch (std::string st)
   {
     wxMessageBox(wxString(st), 
       wxString("Error reading the anatomy data from ") + fileName + wxString("."));
   }
-
+  std::cout << "[DATA_DEBUG_LOADSPEAKER] Data::loadSpeaker() EXIT." << std::endl;
   return true;
 }
 

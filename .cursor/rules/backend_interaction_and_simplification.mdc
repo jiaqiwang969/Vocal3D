@@ -5,20 +5,20 @@ alwaysApply: false
 ---
 # Backend Interaction: Acoustic3dSimulation and VocalTract Simplification
 
-This document outlines the analysis of interaction between `[Acoustic3dSimulation.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Acoustic3dSimulation.h)` (and its `.cpp`) and `[VocalTract.h](mdc:VTL3D_1.0.2/sources/Backend/VocalTract.h)` (and its `.cpp`), with the primary goal of simplifying `VocalTract` to support a workflow趋势 where `Acoustic3dSimulation` predominantly uses geometry loaded directly from CSV files.
+This document outlines the analysis of interaction between `[Acoustic3dSimulation.h](mdc:miniVTL3D/sources/Backend/Acoustic3dSimulation.h)` (and its `.cpp`) and `[VocalTract.h](mdc:miniVTL3D/sources/Backend/VocalTract.h)` (and its `.cpp`), with the primary goal of simplifying `VocalTract` to support a workflow趋势 where `Acoustic3dSimulation` predominantly uses geometry loaded directly from CSV files.
 
 ## Current Understanding & Goals
 
-*   **`Acoustic3dSimulation`'s Potential for CSV Input**: Evidence from `[Acoustic3dSimulation.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Acoustic3dSimulation.h)` (e.g., `extractContoursFromCsvFile` method) and `[Acoustic3dSimulation.cpp](mdc:VTL3D_1.0.2/sources/Bak/Backend/Acoustic3dSimulation.cpp)` (log messages mentioning CSV) suggests it can load and process vocal tract geometry directly from CSV files.
+*   **`Acoustic3dSimulation`'s Potential for CSV Input**: Evidence from `[Acoustic3dSimulation.h](mdc:miniVTL3D/sources/Backend/Acoustic3dSimulation.h)` (e.g., `extractContoursFromCsvFile` method) and `[Acoustic3dSimulation.cpp](mdc:miniVTL3D/sources/Backend/Acoustic3dSimulation.cpp)` (log messages mentioning CSV) suggests it can load and process vocal tract geometry directly from CSV files.
 *   **`VocalTract`'s Current Role**: `VocalTract` currently serves as a comprehensive, parameter-driven 3D geometric model of the vocal tract. It generates detailed 3D surfaces, calculates a centerline, and derives cross-sectional area functions. `Acoustic3dSimulation` uses `VocalTract*` in methods like `importGeometry` and `solveWaveProblem`.
-*   **Simplification Goal**: If `Acoustic3dSimulation` can independently manage CSV-based geometry, the extensive geometric generation capabilities of `VocalTract` (parameterization, 3D surface calculations via `[Surface.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Surface.h)` & `[Splines.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Splines.h)`, centerline/cross-section extraction detailed in `[01-VocalTractGeometryAlgorithms.md](mdc:VTL3D_1.0.2/sources/doc/01-VocalTractGeometryAlgorithms.md)`) may become largely redundant for this specific workflow. `VocalTract` could potentially be reduced to a simpler data holder for parameters not covered by CSV or a minimal interface.
+*   **Simplification Goal**: If `Acoustic3dSimulation` can independently manage CSV-based geometry, the extensive geometric generation capabilities of `VocalTract` (parameterization, 3D surface calculations via `[Surface.h](mdc:miniVTL3D/sources/Backend/Surface.h)` & `[Splines.h](mdc:miniVTL3D/sources/Backend/Splines.h)`, centerline/cross-section extraction detailed in `[01-VocalTractGeometryAlgorithms.md](mdc:miniVTL3D/sources/doc/01-VocalTractGeometryAlgorithms.md)`) may become largely redundant for this specific workflow. `VocalTract` could potentially be reduced to a simpler data holder for parameters not covered by CSV or a minimal interface.
 
 ## Analysis and Simplification Strategy for `VocalTract`
 
 The process involves:
 
 1.  **Confirming `Acoustic3dSimulation`'s CSV Capabilities**:
-    *   Analyze the implementation of `Acoustic3dSimulation::extractContoursFromCsvFile` in `[Acoustic3dSimulation.cpp](mdc:VTL3D_1.0.2/sources/Bak/Backend/Acoustic3dSimulation.cpp)` to understand the expected CSV format and what internal geometric representations are populated.
+    *   Analyze the implementation of `Acoustic3dSimulation::extractContoursFromCsvFile` in `[Acoustic3dSimulation.cpp](mdc:miniVTL3D/sources/Backend/Acoustic3dSimulation.cpp)` to understand the expected CSV format and what internal geometric representations are populated.
     *   Determine if these representations are sufficient for subsequent simulation steps (`computeMeshAndModes`, `solveWaveProblem`, etc.) without further complex data from a `VocalTract` object.
 
 2.  **Analyzing `VocalTract` Usage by `Acoustic3dSimulation`**:
@@ -29,10 +29,10 @@ The process involves:
         *   Other global acoustic parameters.
 
 3.  **Simplifying `VocalTract` based on Findings**:
-    *   **If `Acoustic3dSimulation` can be fully CSV-driven for geometry**: The `VocalTract` class can be significantly stripped down. Functions to be potentially removed/commented out from `[VocalTract.cpp](mdc:VTL3D_1.0.2/sources/Backend/VocalTract.cpp)` and their declarations from `[VocalTract.h](mdc:VTL3D_1.0.2/sources/Backend/VocalTract.h)` include:
+    *   **If `Acoustic3dSimulation` can be fully CSV-driven for geometry**: The `VocalTract` class can be significantly stripped down. Functions to be potentially removed/commented out from `[VocalTract.cpp](mdc:miniVTL3D/sources/Backend/VocalTract.cpp)` and their declarations from `[VocalTract.h](mdc:miniVTL3D/sources/Backend/VocalTract.h)` include:
         *   Most methods related to parametric control (`param` array manipulation, except perhaps for a few global settings).
         *   The entire shape library system (`shapes` vector, `readShapesXml`, `writeShapesXml`).
-        *   Most 3D surface generation logic (`calcSurfaces`, `initLarynx`, `initJaws`, `initVelum`, `calcLips`, `calcTongue`) and dependencies on `[Splines.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Splines.h)` and complex `[Surface.h](mdc:VTL3D_1.0.2/sources/Bak/Backend/Surface.h)` usage.
+        *   Most 3D surface generation logic (`calcSurfaces`, `initLarynx`, `initJaws`, `initVelum`, `calcLips`, `calcTongue`) and dependencies on `[Splines.h](mdc:miniVTL3D/sources/Backend/Splines.h)` and complex `[Surface.h](mdc:miniVTL3D/sources/Backend/Surface.h)` usage.
         *   Centerline calculation (`calcCenterLine`) and cross-section profile extraction from surfaces (`getCrossProfiles`, `getCrossSection`).
         *   Many export functions (`saveAsObjFile`, `exportTractContourSvg`, etc.).
     *   **Retained `VocalTract` Functionality (Potentially)**:
@@ -46,14 +46,14 @@ The process involves:
 
 ## Path to Backend Files (Relative to Workspace Root for .mdc linking)
 
-*   `Acoustic3dSimulation.h`: `VTL3D_1.0.2/sources/Bak/Backend/Acoustic3dSimulation.h`
-*   `Acoustic3dSimulation.cpp`: `VTL3D_1.0.2/sources/Bak/Backend/Acoustic3dSimulation.cpp`
-*   `VocalTract.h`: `VTL3D_1.0.2/sources/Backend/VocalTract.h` (assuming restored here for compilation)
-*   `VocalTract.cpp`: `VTL3D_1.0.2/sources/Backend/VocalTract.cpp` (assuming restored here for compilation)
-*   `Data.h`: `VTL3D_1.0.2/sources/Data.h`
-*   `Data.cpp`: `VTL3D_1.0.2/sources/Data.cpp`
-*   `Surface.h`: `VTL3D_1.0.2/sources/Bak/Backend/Surface.h`
-*   `Splines.h`: `VTL3D_1.0.2/sources/Bak/Backend/Splines.h`
-*   Relevant analysis documents in: `VTL3D_1.0.2/sources/doc/`
+*   `Acoustic3dSimulation.h`: `miniVTL3D/sources/Backend/Acoustic3dSimulation.h`
+*   `Acoustic3dSimulation.cpp`: `miniVTL3D/sources/Backend/Acoustic3dSimulation.cpp`
+*   `VocalTract.h`: `miniVTL3D/sources/Backend/VocalTract.h` (assuming restored here for compilation)
+*   `VocalTract.cpp`: `miniVTL3D/sources/Backend/VocalTract.cpp` (assuming restored here for compilation)
+*   `Data.h`: `miniVTL3D/sources/Data.h`
+*   `Data.cpp`: `miniVTL3D/sources/Data.cpp`
+*   `Surface.h`: `miniVTL3D/sources/Backend/Surface.h`
+*   `Splines.h`: `miniVTL3D/sources/Backend/Splines.h`
+*   Relevant analysis documents in: `miniVTL3D/sources/doc/`
 
 This rule will guide the focused simplification of `VocalTract` while ensuring `Acoustic3dSimulation` remains functional with CSV-based geometry.

@@ -5123,6 +5123,12 @@ bool Acoustic3dSimulation::extractContoursFromCsvFile(
 bool Acoustic3dSimulation::createCrossSections(VocalTract* tract,
   bool createRadSection)
 {
+  // Ensure m_geometryFile is convertible to const char*
+  const std::string& geoFile = m_geometryFile; 
+  std::cout << "[A3DS_DEBUG_CREATE_CS] createCrossSections ENTRY - m_geometryImported: " << m_geometryImported 
+            << ", m_geometryFile: " << (geoFile.empty() ? "EMPTY" : geoFile.c_str())
+            << ", tract_ptr: " << tract << std::endl;
+
   const double MINIMAL_AREA(0.15);
 
   //*******************************************
@@ -5144,18 +5150,44 @@ bool Acoustic3dSimulation::createCrossSections(VocalTract* tract,
   ofstream log("log.txt", ofstream::app);
   log << "Start cross-section creation" << endl;
 
+
   if (m_geometryImported)
   {
+    std::cout << "[A3DS_DEBUG_CREATE_CS] Path: CSV Geometry. m_geometryFile: " << (geoFile.empty() ? "EMPTY" : geoFile.c_str()) << std::endl;
+    log << "[A3DS_DEBUG_CREATE_CS] Path: CSV Geometry. m_geometryFile: " << (geoFile.empty() ? "EMPTY" : geoFile.c_str()) << std::endl;
     if ( !extractContoursFromCsvFile(contours, surfaceIdx, centerLine, 
       normals, vecScalingFactors, true))
     {
-      return false;
+      // CSV导入失败的日志（如果extractContoursFromCsvFile内部没有充分日志的话）
+      std::cout << "[A3DS_DEBUG_CREATE_CS] extractContoursFromCsvFile FAILED." << std::endl;
+      log << "[A3DS_DEBUG_CREATE_CS] extractContoursFromCsvFile FAILED." << std::endl;
+      // log.close(); // 通常由调用者管理日志流生命周期
+      return false; 
     }
   }
-  else
+  else // m_geometryImported is false
   {
+    std::cout << "[A3DS_DEBUG_CREATE_CS] Path: VocalTract Geometry. m_geometryImported is false. CSV IS REQUIRED. ABORTING GEOMETRY FROM TRACT." << std::endl;
+    log << "[A3DS_DEBUG_CREATE_CS] Path: VocalTract Geometry. m_geometryImported is false. CSV IS REQUIRED. ABORTING GEOMETRY FROM TRACT." << std::endl;
+    // Cleanup or set error state if needed
+    m_crossSections.clear(); // 清理可能存在的旧截面数据
+    std::cout << "[A3DS_DEBUG_CREATE_CS] createCrossSections EXIT - returning false (CSV required but m_geometryImported is false)." << std::endl;
+    // log.close(); // 同上，让调用者管理
+    return false; // 强制失败，因为我们需要CSV
+
+    /* // Original code for VocalTract path - now disabled
+    std::cout << "[A3DS_DEBUG_CREATE_CS] Path: VocalTract Geometry. tract_ptr: " << tract << ". Calling tract->getCrossProfiles() and tract->getCrossSection()." << std::endl;
+    log << "[A3DS_DEBUG_CREATE_CS] Path: VocalTract Geometry. tract_ptr: " << tract << ". Calling tract->getCrossProfiles() and tract->getCrossSection()." << std::endl;
+    if (tract == NULL)
+    {
+      std::cerr << "[A3DS_ERROR] createCrossSections: tract is NULL in VocalTract geometry path!" << std::endl;
+      log << "[A3DS_ERROR] createCrossSections: tract is NULL in VocalTract geometry path!" << std::endl;
+      return false;
+    }
     extractContours(tract, contours, surfaceIdx, centerLine, normals);
+    */
   }
+
 
   // initialize max bounding box
   m_maxCSBoundingBox.first = Point2D(0., 0.);
@@ -5210,8 +5242,7 @@ bool Acoustic3dSimulation::createCrossSections(VocalTract* tract,
     double scaling, shift;
     array<double, 4> bb1(bboxes[idx1]), bb2(bboxes[idx2]);
 
-    double scalingArea(sqrt(max(MINIMAL_AREA, totAreas[idx2])
-      / max(MINIMAL_AREA, totAreas[idx1])));
+    double scalingArea(sqrt(max(MINIMAL_AREA, totAreas[idx2]) / max(MINIMAL_AREA, totAreas[idx1])));
 
     if ((totAreas[idx1] < MINIMAL_AREA) || (totAreas[idx2] < MINIMAL_AREA)
       || (m_contInterpMeth == AREA))
@@ -5810,6 +5841,7 @@ bool Acoustic3dSimulation::createCrossSections(VocalTract* tract,
   //}
   //ofs.close();
 
+  std::cout << "[A3DS_DEBUG_CREATE_CS] createCrossSections EXIT" << std::endl;
   return true;
   log.close();
 }
@@ -5884,42 +5916,46 @@ void Acoustic3dSimulation::setBoundingBox(pair<Point2D, Point2D> &bbox)
 
 bool Acoustic3dSimulation::importGeometry(VocalTract* tract)
 {
+  std::cout << "[Acoustic3dSim_DEBUG] importGeometry ENTRY - m_reloadGeometry: " << m_reloadGeometry << ", m_geometryImported: " << m_geometryImported << ", m_geometryFile: " << m_geometryFile << std::endl;
+
   if (m_reloadGeometry)
   {
     ofstream log("log.txt", ofstream::app);
+    log << "[Acoustic3dSim_DEBUG] importGeometry: m_reloadGeometry is true." << std::endl;
 
     auto start = std::chrono::system_clock::now();
 
+    std::cout << "[Acoustic3dSim_DEBUG] importGeometry: About to call createCrossSections." << std::endl;
     if (createCrossSections(tract, false))
     {
       log << "Geometry successfully imported" << endl;
+      std::cout << "[Acoustic3dSim_DEBUG] importGeometry: createCrossSections returned true." << std::endl;
 
       auto end = std::chrono::system_clock::now();
       std::chrono::duration<double> elapsed_seconds = end - start;
 
       log << "Time import geometry " << elapsed_seconds.count() << endl;
 
-      // unless it is explicitely requested, the geometry should not be reloaded
-      // if this has already been done
       m_reloadGeometry = false;
 
       log.close();
+      std::cout << "[Acoustic3dSim_DEBUG] importGeometry EXIT - returning true (geometry loaded/reloaded)." << std::endl;
       return true;
     }
     else
     {
       log << "Importation failed" << endl;
-
-      // unless it is explicitely requested, the geometry should not be reloaded
-      // if this has already been done
-      m_reloadGeometry = false;
+      std::cout << "[Acoustic3dSim_DEBUG] importGeometry: createCrossSections returned false." << std::endl;
+      m_reloadGeometry = false; 
 
       log.close();
+      std::cout << "[Acoustic3dSim_DEBUG] importGeometry EXIT - returning false (importation failed)." << std::endl;
       return false;
     }
   }
   else
   {
+    std::cout << "[Acoustic3dSim_DEBUG] importGeometry EXIT - returning true (m_reloadGeometry was false)." << std::endl;
     return true;
   }
 }
